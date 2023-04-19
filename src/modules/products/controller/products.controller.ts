@@ -7,13 +7,21 @@ import {
   Body,
   Put,
   Delete,
+  HttpStatus,
+  HttpCode,
+  Res,
 } from '@nestjs/common';
+
+// Importando response para manipular la res
+import { Response } from 'express';
 
 // Los decoradores indican como se va a comportar la clase o el método
 
 @Controller('products') // Indica que la clase es un controlador
 export class ProductsController {
   @Get('/') // Example: products?limit=50&offset=1&brand=shoes
+  // Indicamos que vamos a tener un HttpCode y enviamos un parametro del objeto HttpStatus (Tambien podriamos enviar uno personalizado -> @HttpCode(200))
+  @HttpCode(HttpStatus.OK)
   // Indicamos que vamos a recibir parametros tipo query
   getProducts(
     @Query('limit') limit = 100,
@@ -30,9 +38,14 @@ export class ProductsController {
   }
 
   @Get('/:productId')
-  // Indicamos que vamos a recibir un parámetro llamado productId
-  getProduct(@Param('productId') productId: string) {
-    return `Product ${productId}`;
+  // Indicamos que vamos a recibir un parámetro llamado productId y accediendo al responde de tipo Response Express
+  getProduct(@Res() response: Response, @Param('productId') productId: string) {
+    // Respondiendo con el formato de Express
+    response.status(HttpStatus.ACCEPTED).send({
+      body: {
+        message: `Product ${productId}`,
+      },
+    });
   }
 
   @Post()
