@@ -39,9 +39,9 @@ export class ProductsController {
 
   @Get('/:productId')
   // Indicamos que vamos a recibir un parámetro llamado productId y accediendo al responde de tipo Response Express
-  getProduct(@Res() response: Response, @Param('productId') productId: string) {
+  getProduct(@Res() res: Response, @Param('productId') productId: number) {
     // Respondiendo con el formato de Express
-    response.status(HttpStatus.ACCEPTED).send({
+    res.status(HttpStatus.ACCEPTED).send({
       body: {
         message: `Product ${productId}`,
       },
@@ -61,7 +61,7 @@ export class ProductsController {
 
   @Put('/:productId')
   // Indicamos que vamos a recibir data en el body y un parametro llamado productId
-  editProduct(@Param('productId') productId: string, @Body() payload: any) {
+  editProduct(@Param('productId') productId: number, @Body() payload: any) {
     return {
       body: {
         message: 'Accion de editar',
@@ -73,7 +73,7 @@ export class ProductsController {
 
   @Delete('/:productId')
   // Indicamos que vamos a recibir un parametro llamada productId
-  deleteProduct(@Param('productId') productId: string) {
+  deleteProduct(@Param('productId') productId: number) {
     return {
       body: {
         message: 'Accion de eliminar',

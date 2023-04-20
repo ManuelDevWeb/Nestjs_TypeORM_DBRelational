@@ -7,8 +7,8 @@ export class CategoriesController {
   @Get('/:categoryId/products/:productId')
   // Indicamos que vamos a recibir un parametro llamado categoryId y otro llamado productId
   getProductByCategoryIdAndProductId(
-    @Param('categoryId') categoryId: string,
-    @Param('productId') productId: string,
+    @Param('categoryId') categoryId: number,
+    @Param('productId') productId: number,
   ) {
     return `Product ${productId} from category ${categoryId}`;
   }
