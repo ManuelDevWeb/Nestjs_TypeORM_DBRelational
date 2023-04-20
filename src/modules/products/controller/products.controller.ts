@@ -10,15 +10,24 @@ import {
   HttpStatus,
   HttpCode,
   Res,
+  ParseIntPipe,
 } from '@nestjs/common';
 
 // Importando response para manipular la res
 import { Response } from 'express';
 
+// Importando el servicio de productos
+import { ProductsService } from '../service/products.service';
+
 // Los decoradores indican como se va a comportar la clase o el método
 
 @Controller('products') // Indica que la clase es un controlador
 export class ProductsController {
+  constructor(
+    // Inyectando dependencia (Se crea automaticamente una instancia de la clase ProductsService y se inyecta en el constructor)
+    private productsService: ProductsService,
+  ) {}
+
   @Get('/') // Example: products?limit=50&offset=1&brand=shoes
   // Indicamos que vamos a tener un HttpCode y enviamos un parametro del objeto HttpStatus (Tambien podriamos enviar uno personalizado -> @HttpCode(200))
   @HttpCode(HttpStatus.OK)
@@ -28,22 +37,44 @@ export class ProductsController {
     @Query('offset') offset = 50,
     @Query('brand') brand?: string,
   ) {
+    // return {
+    //   body: {
+    //     limit,
+    //     offset,
+    //     brand,
+    //   },
+    // };
+    const products = this.productsService.findAll();
+
     return {
       body: {
-        limit,
-        offset,
-        brand,
+        data: products,
+        pagination: {
+          limit,
+          offset,
+          brand,
+        },
       },
     };
   }
 
   @Get('/:productId')
-  // Indicamos que vamos a recibir un parámetro llamado productId y accediendo al responde de tipo Response Express
-  getProduct(@Res() res: Response, @Param('productId') productId: number) {
+  // Indicamos que vamos a recibir un parámetro llamado productId (Lo convertimos en numerico gracias al pipe ParseIntPipe) y accediendo al responde de tipo Response Express
+  getProduct(
+    @Res() res: Response,
+    @Param('productId', ParseIntPipe) productId: number,
+  ) {
     // Respondiendo con el formato de Express
-    res.status(HttpStatus.ACCEPTED).send({
+    // res.status(HttpStatus.ACCEPTED).send({
+    //   body: {
+    //     message: `Product ${productId}`,
+    //   },
+    // });
+    const product = this.productsService.findOne(productId);
+
+    res.status(HttpStatus.OK).send({
       body: {
-        message: `Product ${productId}`,
+        data: product,
       },
     });
   }
@@ -51,33 +82,58 @@ export class ProductsController {
   @Post()
   // Indicamos que vamos a recibir data en el body
   create(@Body() payload: any) {
+    // return {
+    //   body: {
+    //     message: 'Accion de crear',
+    //     payload,
+    //   },
+    // };
+    const newProduct = this.productsService.create(payload);
+
     return {
       body: {
-        message: 'Accion de crear',
-        payload,
+        data: newProduct,
       },
     };
   }
 
   @Put('/:productId')
-  // Indicamos que vamos a recibir data en el body y un parametro llamado productId
-  editProduct(@Param('productId') productId: number, @Body() payload: any) {
+  // Indicamos que vamos a recibir data en el body y un parametro llamado productId ((Lo convertimos en numerico gracias al pipe ParseIntPipe)
+  editProduct(
+    @Param('productId', ParseIntPipe) productId: number,
+    @Body() payload: any,
+  ) {
+    // return {
+    //   body: {
+    //     message: 'Accion de editar',
+    //     id: productId,
+    //     payload,
+    //   },
+    // };
+    const product = this.productsService.update(productId, payload);
+
     return {
       body: {
-        message: 'Accion de editar',
-        id: productId,
-        payload,
+        data: product,
       },
     };
   }
 
   @Delete('/:productId')
-  // Indicamos que vamos a recibir un parametro llamada productId
-  deleteProduct(@Param('productId') productId: number) {
+  // Indicamos que vamos a recibir un parametro llamada productId (Lo convertimos en numerico gracias al pipe ParseIntPipe)
+  deleteProduct(@Param('productId', ParseIntPipe) productId: number) {
+    // return {
+    //   body: {
+    //     message: 'Accion de eliminar',
+    //     id: productId,
+    //   },
+    // };
+
+    const product = this.productsService.delete(productId);
+
     return {
       body: {
-        message: 'Accion de eliminar',
-        id: productId,
+        data: product,
       },
     };
   }
