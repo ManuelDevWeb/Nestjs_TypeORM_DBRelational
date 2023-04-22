@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 
 // Importando la clase Product
 import { Product } from '../entity/product.entity';
@@ -26,7 +26,13 @@ export class ProductsService {
 
   // Método para obtener un producto por id
   findOne(id: number) {
-    return this.products.find((item) => item.id === id);
+    const product = this.products.find((item) => item.id === id);
+
+    if (!product) {
+      throw new HttpException(`Product #${id} not found`, HttpStatus.NOT_FOUND);
+    }
+
+    return product;
   }
 
   // Método para crear un producto

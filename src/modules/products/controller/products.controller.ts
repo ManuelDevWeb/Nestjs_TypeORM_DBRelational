@@ -10,8 +10,9 @@ import {
   HttpStatus,
   HttpCode,
   Res,
-  ParseIntPipe,
+  // ParseIntPipe,
 } from '@nestjs/common';
+import { ParseIntPipe } from '../../../common/parse-int/parse-int.pipe';
 
 // Importando response para manipular la res
 import { Response } from 'express';
@@ -129,12 +130,20 @@ export class ProductsController {
     //   },
     // };
 
-    const product = this.productsService.delete(productId);
+    try {
+      const product = this.productsService.delete(productId);
 
-    return {
-      body: {
-        data: product,
-      },
-    };
+      return {
+        body: {
+          data: product,
+        },
+      };
+    } catch (error) {
+      return {
+        body: {
+          error,
+        },
+      };
+    }
   }
 }
