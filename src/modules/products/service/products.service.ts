@@ -1,5 +1,11 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 
+// Importando el DTO (Data Transfer Object)
+import {
+  CreateProductDto,
+  UpdateProductDto,
+} from '../../../dtos/products.dtos';
+
 // Importando la clase Product
 import { Product } from '../entity/product.entity';
 
@@ -36,7 +42,7 @@ export class ProductsService {
   }
 
   // Método para crear un producto
-  create(payload: any) {
+  create(payload: CreateProductDto) {
     // Incrementamos el contador
     this.counter++;
 
@@ -51,7 +57,7 @@ export class ProductsService {
   }
 
   // Método para editar un producto
-  update(id: number, payload: any) {
+  update(id: number, payload: UpdateProductDto) {
     // Buscamos el producto por id
     const product = this.findOne(id);
 

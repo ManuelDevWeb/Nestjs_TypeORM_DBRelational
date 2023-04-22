@@ -12,7 +12,13 @@ import {
   Res,
   // ParseIntPipe,
 } from '@nestjs/common';
+// Importando Pipe personalizado
 import { ParseIntPipe } from '../../../common/parse-int/parse-int.pipe';
+// Importando DTO (Data Transfer Object)
+import {
+  CreateProductDto,
+  UpdateProductDto,
+} from '../../../dtos/products.dtos';
 
 // Importando response para manipular la res
 import { Response } from 'express';
@@ -82,7 +88,7 @@ export class ProductsController {
 
   @Post()
   // Indicamos que vamos a recibir data en el body
-  create(@Body() payload: any) {
+  create(@Body() payload: CreateProductDto) {
     // return {
     //   body: {
     //     message: 'Accion de crear',
@@ -102,7 +108,7 @@ export class ProductsController {
   // Indicamos que vamos a recibir data en el body y un parametro llamado productId ((Lo convertimos en numerico gracias al pipe ParseIntPipe)
   editProduct(
     @Param('productId', ParseIntPipe) productId: number,
-    @Body() payload: any,
+    @Body() payload: UpdateProductDto,
   ) {
     // return {
     //   body: {
