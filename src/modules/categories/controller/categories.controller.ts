@@ -19,7 +19,7 @@ import {
   UpdateCategoryDto,
 } from '../../../dtos/categories.dtos';
 
-// Importando response para manipular la res
+// Importando response para manipular la res con express
 import { Response } from 'express';
 
 // Importando el servicio de categorias
