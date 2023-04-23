@@ -17,7 +17,7 @@ import { ParseIntPipe } from '../../../common/parse-int/parse-int.pipe';
 import {
   CreateCategoryDto,
   UpdateCategoryDto,
-} from '../../../dtos/categories.dto';
+} from '../../../dtos/categories.dtos';
 
 // Importando response para manipular la res
 import { Response } from 'express';
