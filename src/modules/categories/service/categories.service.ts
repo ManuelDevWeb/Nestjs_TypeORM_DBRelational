@@ -54,7 +54,7 @@ export class CategoriesService {
     // Incrementamos el contador
     this.counter++;
 
-    const newCategory: any = {
+    const newCategory: Category = {
       id: this.counter,
       ...payload,
     };
