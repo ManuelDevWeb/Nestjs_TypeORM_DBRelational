@@ -105,7 +105,7 @@ export class ProductsController {
   }
 
   @Put('/:productId')
-  // Indicamos que vamos a recibir data en el body y un parametro llamado productId ((Lo convertimos en numerico gracias al pipe ParseIntPipe)
+  // Indicamos que vamos a recibir data en el body y un parametro llamado productId (Lo convertimos en numerico gracias al pipe ParseIntPipe)
   editProduct(
     @Param('productId', ParseIntPipe) productId: number,
     @Body() payload: UpdateProductDto,
@@ -145,11 +145,7 @@ export class ProductsController {
         },
       };
     } catch (error) {
-      return {
-        body: {
-          error,
-        },
-      };
+      return error;
     }
   }
 }
