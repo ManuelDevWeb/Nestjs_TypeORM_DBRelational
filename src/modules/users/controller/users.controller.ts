@@ -32,7 +32,7 @@ export class UsersController {
   ) {}
 
   @Get('/')
-  // Indicamos que vamos a tener un HttpCode y enviamos un parametro del obketo HttpStatus
+  // Indicamos que vamos a tener un HttpCode y enviamos un parametro del objeto HttpStatus
   @HttpCode(HttpStatus.OK)
   // Indicamos que vamos a recibir parametros de tipo query
   getUsers(@Query('limit') limit = 100, @Query('offset') offset = 50) {
