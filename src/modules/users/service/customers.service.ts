@@ -7,7 +7,7 @@ import { Customer } from '../entity/customer.entity';
 import {
   CreateCustomerDto,
   UpdateCustomerDto,
-} from '../../../dtos/customers.dtos';
+} from '../dtos/customers.dtos';
 
 @Injectable() // Indicamos que la clase puede ser inyectada en otros lugares
 export class CustomersService {

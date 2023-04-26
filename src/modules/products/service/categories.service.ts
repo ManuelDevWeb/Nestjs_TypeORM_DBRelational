@@ -7,7 +7,7 @@ import { Category } from '../entity/category.entity';
 import {
   CreateCategoryDto,
   UpdateCategoryDto,
-} from '../../../dtos/categories.dtos';
+} from '../dtos/categories.dtos';
 
 @Injectable() // Indicamos que la clase puede ser inyectada en otros lugares
 export class CategoriesService {

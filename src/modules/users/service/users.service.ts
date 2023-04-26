@@ -4,7 +4,7 @@ import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { User } from '../entity/user.entity';
 
 // Importando el DTO (Data Transfer Object)
-import { CreateUserDto, UpdateUserDto } from '../../../dtos/users.dtos';
+import { CreateUserDto, UpdateUserDto } from '../dtos/users.dtos';
 
 @Injectable() // Indicamos que la clase puede ser inyectada en otros lugares
 export class UsersService {
