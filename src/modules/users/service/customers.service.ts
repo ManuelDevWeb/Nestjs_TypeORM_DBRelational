@@ -1,13 +1,10 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 
 // Importando la clase (interface) Customer
-import { Customer } from '../entity/customer.entity';
+import { Customer } from '../entities/customer.entity';
 
 // Importando DTO (Data Transfer Object)
-import {
-  CreateCustomerDto,
-  UpdateCustomerDto,
-} from '../dtos/customers.dtos';
+import { CreateCustomerDto, UpdateCustomerDto } from '../dtos/customers.dtos';
 
 @Injectable() // Indicamos que la clase puede ser inyectada en otros lugares
 export class CustomersService {

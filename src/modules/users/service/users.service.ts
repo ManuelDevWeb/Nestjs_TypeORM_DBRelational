@@ -1,13 +1,24 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus, Inject } from '@nestjs/common';
 
-// Importando la clase (interface) User
-import { User } from '../entity/user.entity';
+// Importando la clase (interface) User y Order
+import { User } from '../entities/user.entity';
+import { Order } from '../entities/order.entity';
 
 // Importando el DTO (Data Transfer Object)
 import { CreateUserDto, UpdateUserDto } from '../dtos/users.dtos';
 
+// Importando servicio de products
+import { ProductsService } from '../../products/service/products.service';
+
 @Injectable() // Indicamos que la clase puede ser inyectada en otros lugares
 export class UsersService {
+  constructor(
+    // Inyectando dependencias (Se crea automaticamente una instancia de la clase ProductsService y se inyecta en el constructor)
+    private productsService: ProductsService,
+    // Inyectando el provider de tipo useValue
+    @Inject('API_KEY') private apiKey: string,
+  ) {}
+
   private counter = 1;
 
   // Array privado de users, solo accesible desde la clase
@@ -43,6 +54,17 @@ export class UsersService {
     }
 
     return user;
+  }
+
+  // Metodo para obtener las ordenes de un usuario
+  getOrdersByUser(id: number): Order {
+    const user = this.findOne(id);
+
+    return {
+      date: new Date(),
+      user,
+      products: this.productsService.findAll(),
+    };
   }
 
   // Metodo para crear un usuario

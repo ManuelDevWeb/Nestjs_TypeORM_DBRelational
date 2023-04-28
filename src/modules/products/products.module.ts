@@ -14,5 +14,7 @@ import { CategoriesService } from './service/categories.service';
   controllers: [ProductsController, BrandsController, CategoriesController],
   // Indicamos los services
   providers: [ProductsService, BrandsService, CategoriesService],
+  // Exportando el modulo para que otros modulos puedan usar los servicios de ProductsModule
+  exports: [ProductsService],
 })
 export class ProductsModule {}

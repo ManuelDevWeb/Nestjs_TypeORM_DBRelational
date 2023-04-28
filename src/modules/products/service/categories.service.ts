@@ -1,7 +1,7 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 
 // Importando la clase (interface) Category
-import { Category } from '../entity/category.entity';
+import { Category } from '../entities/category.entity';
 
 // Importando el DTO (Data Transfer Object)
 import {
