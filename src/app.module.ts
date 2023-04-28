@@ -3,6 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { HttpModule, HttpService } from '@nestjs/axios';
 import { lastValueFrom } from 'rxjs';
+import { ConfigModule } from '@nestjs/config';
 
 // Modules
 import { ProductsModule } from './modules/products/products.module';
@@ -10,7 +11,19 @@ import { UsersModule } from './modules/users/users.module';
 import { DatabaseModule } from './database/database.module';
 
 @Module({
-  imports: [HttpModule, ProductsModule, UsersModule, DatabaseModule],
+  imports: [
+    // Config Module
+    ConfigModule.forRoot({
+      // Archivo a leer
+      envFilePath: '.env',
+      // Lo hacemos global (Con esto lo podemos inyectar en todos los modules)
+      isGlobal: true,
+    }),
+    HttpModule,
+    ProductsModule,
+    UsersModule,
+    DatabaseModule,
+  ],
   controllers: [AppController],
   providers: [
     AppService,

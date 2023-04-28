@@ -1,4 +1,5 @@
-import { Injectable, HttpException, HttpStatus, Inject } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 
 // Importando la clase (interface) User y Order
 import { User } from '../entities/user.entity';
@@ -15,8 +16,8 @@ export class UsersService {
   constructor(
     // Inyectando dependencias (Se crea automaticamente una instancia de la clase ProductsService y se inyecta en el constructor)
     private productsService: ProductsService,
-    // Inyectando el provider de tipo useValue
-    @Inject('API_KEY') private apiKey: string,
+    // Inyectando dependencia (Config module)
+    private configService: ConfigService,
   ) {}
 
   private counter = 1;
@@ -34,6 +35,12 @@ export class UsersService {
   // Metodo para obtener todos los usuarios
   findAll() {
     const users = this.users;
+
+    const apiKey = this.configService.get('API_KEY');
+    const dbName = this.configService.get('DATABASE_NAME');
+
+    console.log('Api key', apiKey);
+    console.log('DB: ', dbName);
 
     if (users.length === 0) {
       throw new HttpException(`There aren't any users`, HttpStatus.NOT_FOUND);
