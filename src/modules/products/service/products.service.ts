@@ -7,7 +7,7 @@ import { Product } from '../entities/product.entity';
 import {
   CreateProductDto,
   UpdateProductDto,
-} from '../dtos/products.dtos';
+} from '../dtos/products.dto';
 
 @Injectable() // Indicamos que la clase puede ser inyectada en otros lugares
 export class ProductsService {

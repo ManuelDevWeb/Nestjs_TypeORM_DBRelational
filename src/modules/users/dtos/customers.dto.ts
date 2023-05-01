@@ -9,8 +9,8 @@
 
 // Importando class validator para validar los datos con decoradores
 import { IsString, IsNotEmpty, IsPhoneNumber } from 'class-validator';
-// Mapped Types nos ayuda a reutilizar codigo
-import { PartialType } from '@nestjs/mapped-types';
+// Mapped Types nos ayuda a reutilizar codigo (Es caso de querer documentar, importar de swagger y no de mapped-types)
+import { PartialType } from '@nestjs/swagger';
 
 export class CreateCustomerDto {
   @IsString()

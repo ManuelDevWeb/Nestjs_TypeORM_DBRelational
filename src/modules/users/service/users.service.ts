@@ -9,7 +9,7 @@ import { User } from '../entities/user.entity';
 import { Order } from '../entities/order.entity';
 
 // Importando el DTO (Data Transfer Object)
-import { CreateUserDto, UpdateUserDto } from '../dtos/users.dtos';
+import { CreateUserDto, UpdateUserDto } from '../dtos/users.dto';
 
 // Importando servicio de products
 import { ProductsService } from '../../products/service/products.service';

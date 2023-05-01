@@ -15,9 +15,9 @@ import {
   IsNotEmpty,
   IsPositive,
 } from 'class-validator';
-// Mapped Types nos ayuda a reutilizar codigo.
+// Mapped Types nos ayuda a reutilizar codigo. (Es caso de querer documentar, importar de swagger y no de mapped-types)
 // PartialType toma nuestro DTO base y crea un nuevo DTO agregando las validaciones y el signo ? a cada propiedad
-import { PartialType } from '@nestjs/mapped-types';
+import { PartialType } from '@nestjs/swagger';
 
 export class CreateProductDto {
   // Solo de lectura

@@ -14,7 +14,7 @@ import {
 // Importando Pipe pesonalizado
 import { ParseIntPipe } from '../../../common/parse-int/parse-int.pipe';
 // Importando DTO (Data Transfer Object)
-import { CreateUserDto, UpdateUserDto } from '../dtos/users.dtos';
+import { CreateUserDto, UpdateUserDto } from '../dtos/users.dto';
 
 // Importando response para manipular la res con express
 import { Response } from 'express';
