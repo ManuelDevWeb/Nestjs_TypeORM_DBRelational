@@ -1,5 +1,8 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+// Permite instanciar un objeto con la config
+import { ConfigType } from '@nestjs/config';
+// Importando tipado de config
+import config from './config';
 
 @Injectable()
 export class AppService {
@@ -7,11 +10,12 @@ export class AppService {
     // Injectando el provider de tipo useFactory
     @Inject('TASKS') private tasks: any[],
     // Inyectando dependencia del config module
-    private configService: ConfigService,
+    @Inject(config.KEY) private configService: ConfigType<typeof config>,
   ) {}
 
   getHello(): string {
-    console.log(this.tasks);
-    return 'Hello World!' + this.configService.get('API_KEY');
+    const apiKey = this.configService.apiKey;
+    const db = this.configService.database.name;
+    return `Hello world! The APIKEY is ${apiKey} and the DB is ${db}`;
   }
 }

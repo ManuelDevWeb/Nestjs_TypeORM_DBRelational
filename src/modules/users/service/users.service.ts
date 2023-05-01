@@ -1,5 +1,8 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { Injectable, HttpException, HttpStatus, Inject } from '@nestjs/common';
+// Permite instanciar un objeto con la config
+import { ConfigType } from '@nestjs/config';
+// Importando tipado de config
+import config from '../../../config';
 
 // Importando la clase (interface) User y Order
 import { User } from '../entities/user.entity';
@@ -17,7 +20,7 @@ export class UsersService {
     // Inyectando dependencias (Se crea automaticamente una instancia de la clase ProductsService y se inyecta en el constructor)
     private productsService: ProductsService,
     // Inyectando dependencia (Config module)
-    private configService: ConfigService,
+    @Inject(config.KEY) private configService: ConfigType<typeof config>,
   ) {}
 
   private counter = 1;
@@ -36,8 +39,8 @@ export class UsersService {
   findAll() {
     const users = this.users;
 
-    const apiKey = this.configService.get('API_KEY');
-    const dbName = this.configService.get('DATABASE_NAME');
+    const apiKey = this.configService.apiKey;
+    const dbName = this.configService.database.port;
 
     console.log('Api key', apiKey);
     console.log('DB: ', dbName);

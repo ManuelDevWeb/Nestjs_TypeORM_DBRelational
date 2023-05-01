@@ -4,20 +4,36 @@ import { AppService } from './app.service';
 import { HttpModule, HttpService } from '@nestjs/axios';
 import { lastValueFrom } from 'rxjs';
 import { ConfigModule } from '@nestjs/config';
+// Joi para validar
+import * as Joi from 'joi';
 
 // Modules
 import { ProductsModule } from './modules/products/products.module';
 import { UsersModule } from './modules/users/users.module';
 import { DatabaseModule } from './database/database.module';
 
+// Environments
+import { environments } from '../environments';
+
+// Config tipado
+import config from './config';
+
 @Module({
   imports: [
     // Config Module
     ConfigModule.forRoot({
       // Archivo a leer
-      envFilePath: '.env',
+      envFilePath: environments[process.env.NODE_ENV] || '.env',
       // Lo hacemos global (Con esto lo podemos inyectar en todos los modules)
       isGlobal: true,
+      // Cargar tipado de la configuracion
+      load: [config],
+      // Validacion para los .env
+      validationSchema: Joi.object({
+        API_KEY: Joi.number().required,
+        DATABASE_NAME: Joi.string().required,
+        DATABASE_PORT: Joi.number().required,
+      }),
     }),
     HttpModule,
     ProductsModule,
