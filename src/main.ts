@@ -30,6 +30,9 @@ async function bootstrap() {
   // Endpoint del cual sale la documentacion automaticamente
   SwaggerModule.setup('docs', app, document);
 
+  // Habilitando CORS, se puede especificar las urls a habilitar
+  app.enableCors();
+
   await app.listen(3000);
 }
 bootstrap();
