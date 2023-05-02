@@ -18,12 +18,15 @@ import { CreateCustomerDto, UpdateCustomerDto } from '../dtos/customers.dto';
 
 // Importando response para manipular la res con express
 import { Response } from 'express';
+// Permite agrupar los endpoints para que sea mas legible su documentacion
+import { ApiTags } from '@nestjs/swagger';
 
 // Imporando el servicio de customers
 import { CustomersService } from '../service/customers.service';
 
 // Los decoradores indican como se va a comportar la clase o el metodo
 
+@ApiTags('Customers')
 @Controller('customers')
 export class CustomersController {
   constructor(

@@ -18,12 +18,15 @@ import { CreateCategoryDto, UpdateCategoryDto } from '../dtos/categories.dto';
 
 // Importando response para manipular la res con express
 import { Response } from 'express';
+// Permite agrupar los endpoints para que sea mas legible su documentacion
+import { ApiTags } from '@nestjs/swagger';
 
 // Importando el servicio de categorias
 import { CategoriesService } from '../service/categories.service';
 
 // Los decoradores indican como se va a comportar la clase o el método
 
+@ApiTags('Categories')
 @Controller('categories') // Indica que la clase es un controlador
 export class CategoriesController {
   constructor(

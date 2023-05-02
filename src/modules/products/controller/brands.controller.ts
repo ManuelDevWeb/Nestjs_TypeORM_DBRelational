@@ -18,12 +18,14 @@ import { CreateBrandDto, UpdateBrandDto } from '../dtos/brands.dto';
 
 // Importando response para manipular la res con express
 import { Response } from 'express';
-
+// Permite agrupar los endpoints para que sea mas legible su documentacion
+import { ApiTags } from '@nestjs/swagger';
 // Importando el servicio de brands
 import { BrandsService } from '../service/brands.service';
 
 // Los decoradores indican como se va a comportar la clase o el metodo
 
+@ApiTags('Brands')
 @Controller('brands')
 export class BrandsController {
   constructor(

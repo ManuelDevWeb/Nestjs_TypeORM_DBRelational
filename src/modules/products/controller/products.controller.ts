@@ -15,19 +15,19 @@ import {
 // Importando Pipe personalizado
 import { ParseIntPipe } from '../../../common/parse-int/parse-int.pipe';
 // Importando DTO (Data Transfer Object)
-import {
-  CreateProductDto,
-  UpdateProductDto,
-} from '../dtos/products.dto';
+import { CreateProductDto, UpdateProductDto } from '../dtos/products.dto';
 
 // Importando response para manipular la res
 import { Response } from 'express';
+// ApiTags Permite agrupar los endpoints para que sea mas legible su documentacion y ApiOperation agregar una breve descripcion al endpoint
+import { ApiTags, ApiOperation } from '@nestjs/swagger';
 
 // Importando el servicio de productos
 import { ProductsService } from '../service/products.service';
 
 // Los decoradores indican como se va a comportar la clase o el método
 
+@ApiTags('Products')
 @Controller('products') // Indica que la clase es un controlador
 export class ProductsController {
   constructor(
@@ -36,6 +36,7 @@ export class ProductsController {
   ) {}
 
   @Get('/') // Example: products?limit=50&offset=1&brand=shoes
+  @ApiOperation({ summary: 'List of products' })
   // Indicamos que vamos a tener un HttpCode y enviamos un parametro del objeto HttpStatus (Tambien podriamos enviar uno personalizado -> @HttpCode(200))
   @HttpCode(HttpStatus.OK)
   // Indicamos que vamos a recibir parametros tipo query

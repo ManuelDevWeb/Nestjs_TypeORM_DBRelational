@@ -18,12 +18,15 @@ import { CreateUserDto, UpdateUserDto } from '../dtos/users.dto';
 
 // Importando response para manipular la res con express
 import { Response } from 'express';
+// Permite agrupar los endpoints para que sea mas legible su documentacion
+import { ApiTags } from '@nestjs/swagger';
 
 // Imporando el servicio de users
 import { UsersService } from '../service/users.service';
 
 // Los decoradores indican como se va a comportar la clase o el metodo
 
+@ApiTags('Users')
 @Controller('users')
 export class UsersController {
   constructor(

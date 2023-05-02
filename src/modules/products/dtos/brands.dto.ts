@@ -10,15 +10,17 @@
 // Importando class validator para validar los datos con decoradores
 import { IsString, IsNotEmpty, IsUrl } from 'class-validator';
 // Mapped Types nos ayuda a reutilizar codigo (Es caso de querer documentar, importar de swagger y no de mapped-types)
-import { PartialType } from '@nestjs/swagger';
+import { PartialType, ApiProperty } from '@nestjs/swagger';
 
 export class CreateBrandDto {
   @IsString({ message: 'The name must be a string' })
   @IsNotEmpty()
+  @ApiProperty({ description: 'Name of brand' })
   readonly name: string;
 
   @IsUrl()
   @IsNotEmpty()
+  @ApiProperty({ description: 'Image of brand' })
   readonly imagen: string;
 }
 
