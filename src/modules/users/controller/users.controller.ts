@@ -76,7 +76,11 @@ export class UsersController {
   // Indicamos que vamos a recibir un parámetro llamado userId (Lo convertimos en numerico gracias al pipe ParseIntPipe)
   getOrder(@Param('userId', ParseIntPipe) userId: number) {
     try {
-      return this.usersService.getOrdersByUser(userId);
+      return {
+        body: {
+          data: this.usersService.getOrdersByUser(userId),
+        },
+      };
     } catch (error) {
       return error;
     }
