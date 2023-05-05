@@ -4,8 +4,6 @@ import { AppService } from './app.service';
 import { HttpModule, HttpService } from '@nestjs/axios';
 import { lastValueFrom } from 'rxjs';
 import { ConfigModule } from '@nestjs/config';
-// Joi para validar
-import * as Joi from 'joi';
 
 // Modules
 import { ProductsModule } from './modules/products/products.module';
@@ -18,6 +16,9 @@ import { environments } from '../environments';
 // Config tipado
 import config from './config';
 
+// Config schema validacion .env
+import { configSchema } from './configSchema';
+
 @Module({
   imports: [
     // Config Module
@@ -29,11 +30,7 @@ import config from './config';
       // Cargar tipado de la configuracion
       load: [config],
       // Validacion para los .env
-      validationSchema: Joi.object({
-        API_KEY: Joi.number().required(),
-        DATABASE_NAME: Joi.string().required(),
-        DATABASE_PORT: Joi.number().required(),
-      }),
+      validationSchema: configSchema,
     }),
     HttpModule,
     ProductsModule,
@@ -60,6 +57,7 @@ import config from './config';
         const tasks = await lastValueFrom(req);
         return tasks.data;
       },
+      // Inyectando dependencia
       inject: [HttpService],
     },
   ],

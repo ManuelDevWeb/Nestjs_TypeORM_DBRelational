@@ -56,6 +56,11 @@ export class UsersController {
     }
   }
 
+  @Get('/tasks')
+  getTaks(): Promise<any[]> {
+    return this.usersService.getTaks();
+  }
+
   @Get('/:userId')
   // Indicamos que vamos a recibir un parámetro llamado userId (Lo convertimos en numerico gracias al pipe ParseIntPipe) y accediendo al responde de tipo Response Express
   getUser(@Res() res: Response, @Param('userId', ParseIntPipe) userId: number) {
