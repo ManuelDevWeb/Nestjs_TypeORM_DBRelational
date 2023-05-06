@@ -9,20 +9,23 @@
 
 // Importando class validator para validar los datos con decoradores
 import { IsString, IsNotEmpty, IsEmail } from 'class-validator';
-// Mapped Types nos ayuda a reutilizar codigo. (Es caso de querer documentar, importar de swagger y no de mapped-types)
-import { PartialType } from '@nestjs/swagger';
+// Mapped Types nos ayuda a reutilizar codigo (Es caso de querer documentar, importar de swagger y no de mapped-types)
+import { PartialType, ApiProperty } from '@nestjs/swagger';
 
 export class CreateUserDto {
   @IsEmail()
   @IsNotEmpty()
+  @ApiProperty({ description: 'Email of user' })
   readonly email: string;
 
   @IsString()
   @IsNotEmpty()
+  @ApiProperty({ description: 'Password of user' })
   readonly password: string;
 
   @IsString()
   @IsNotEmpty()
+  @ApiProperty({ description: 'Role of user' })
   readonly role: string;
 }
 

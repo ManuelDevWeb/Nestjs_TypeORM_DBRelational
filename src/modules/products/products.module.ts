@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 // Controllers
 import { ProductsController } from './controller/products.controller';
@@ -8,8 +9,14 @@ import { CategoriesController } from './controller/categories.controller';
 import { ProductsService } from './service/products.service';
 import { BrandsService } from './service/brands.service';
 import { CategoriesService } from './service/categories.service';
+// Entidades
+import { Brand } from './entities/brand.entity';
+import { Category } from './entities/category.entity';
+import { Product } from './entities/product.entity';
 
 @Module({
+  // Importando el modulo de typeorm para que administre las entidades
+  imports: [TypeOrmModule.forFeature([Product, Category, Brand])],
   // Indicamos los controllers
   controllers: [ProductsController, BrandsController, CategoriesController],
   // Indicamos los services

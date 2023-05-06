@@ -1,38 +1,28 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 // Importando la clase (interface) Product
 import { Product } from '../entities/product.entity';
 
 // Importando el DTO (Data Transfer Object)
-import {
-  CreateProductDto,
-  UpdateProductDto,
-} from '../dtos/products.dto';
+import { CreateProductDto, UpdateProductDto } from '../dtos/products.dto';
 
 @Injectable() // Indicamos que la clase puede ser inyectada en otros lugares
 export class ProductsService {
-  private counter = 1;
-
-  // Array privado de productos, solo accesible desde la clase
-  private products: Product[] = [
-    {
-      id: 1,
-      name: 'Product 1',
-      description: 'Description 1',
-      price: 100,
-      stock: 10,
-      image: 'https://picsum.photos/200',
-    },
-  ];
+  constructor(
+    // Inyectando el repositorio de la entidad Product
+    @InjectRepository(Product) private productRepository: Repository<Product>,
+  ) {}
 
   // Método para obtener todos los productos
   findAll() {
-    return this.products;
+    return this.productRepository.find();
   }
 
   // Método para obtener un producto por id
-  findOne(id: number) {
-    const product = this.products.find((item) => item.id === id);
+  async findOne(id: number) {
+    const product = this.productRepository.findOne(id);
 
     if (!product) {
       throw new HttpException(`Product #${id} not found`, HttpStatus.NOT_FOUND);
@@ -43,52 +33,32 @@ export class ProductsService {
 
   // Método para crear un producto
   create(payload: CreateProductDto) {
-    // Incrementamos el contador
-    this.counter++;
-
-    const newProduct: Product = {
-      id: this.counter,
-      ...payload,
-    };
-
-    this.products.push(newProduct);
-
-    return newProduct;
+    const newProduct = this.productRepository.create(payload);
+    return this.productRepository.save(newProduct);
   }
 
   // Método para editar un producto
-  update(id: number, payload: UpdateProductDto) {
+  async update(id: number, payload: UpdateProductDto) {
     // Buscamos el producto por id
-    const product = this.findOne(id);
+    const product = await this.findOne(id);
 
     // Si existe el producto
     if (product) {
-      // Obtenemos el indice del producto
-      const index = this.products.findIndex((item) => item.id === id);
-
-      this.products[index] = {
-        ...product,
-        ...payload,
-      };
-
-      return this.products[index];
+      // Actualizamos los nuevos datos en base al producto encontrado
+      this.productRepository.merge(product, payload);
+      return this.productRepository.save(product);
     }
   }
 
   // Método para eliminar un producto
-  delete(id: number) {
+  async delete(id: number) {
     // Buscamos el producto por id
-    const product = this.findOne(id);
+    const product = await this.findOne(id);
 
     // Si existe el producto
     if (product) {
-      // Obtenemos el indice del producto
-      const index = this.products.findIndex((item) => item.id === id);
-
       // Eliminamos el producto
-      this.products.splice(index, 1);
-
-      return true;
+      return this.productRepository.delete(id);
     }
   }
 }

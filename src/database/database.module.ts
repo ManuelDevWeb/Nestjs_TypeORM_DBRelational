@@ -3,6 +3,8 @@ import { Module, Global } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
 // Importando pg para conectarnos a la DB
 import { Client } from 'pg';
+// Importando typeorm
+import { TypeOrmModule } from '@nestjs/typeorm';
 // Importando tipado de config
 import config from '../config';
 
@@ -10,6 +12,28 @@ const API_KEY = '12345';
 
 @Global() // Lo que este en provider, estara instanciado en toda la aplicacion
 @Module({
+  // Importando typeorm
+  imports: [
+    TypeOrmModule.forRootAsync({
+      // Inyectando dependencia
+      inject: [config.KEY],
+      // Configurando typeorm
+      useFactory: (configService: ConfigType<typeof config>) => {
+        const { user, dbName, host, password, port } = configService.postgresDB;
+
+        return {
+          type: 'postgres', // Tipo de DB
+          host, // Host de la DB
+          port, // Puerto de la DB
+          username: user, // Usuario de la DB
+          password, // Contraseña de la DB
+          database: dbName, // Nombre de la DB
+          synchronize: true, // Sincronizar las entidades con la DB
+          autoLoadEntities: true, // Cargar las entidades automaticamente
+        };
+      },
+    }),
+  ],
   providers: [
     // Forma de proveer un solo valor y se hace de la siguiente forma
     {
@@ -39,6 +63,6 @@ const API_KEY = '12345';
     },
   ],
   // Exportando valores para que otros modulos accedan a el (Como esto es un modulo global NO hay que importar en los demas modulos)
-  exports: ['API_KEY', 'PG_CONNECTION'],
+  exports: ['API_KEY', 'PG_CONNECTION', TypeOrmModule],
 })
 export class DatabaseModule {}
