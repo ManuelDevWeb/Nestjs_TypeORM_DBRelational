@@ -38,9 +38,12 @@ export class CategoriesController {
   // Indicamos que vamos a tener un HttpCode y enviamos un parametro del objeto HttpStatus (Tambien podriamos enviar uno personalizado -> @HttpCode(200))
   @HttpCode(HttpStatus.OK)
   // Indicamos que vamos a recibir parametros tipo query
-  getCategories(@Query('limit') limit = 100, @Query('offset') offset = 50) {
+  async getCategories(
+    @Query('limit') limit = 100,
+    @Query('offset') offset = 50,
+  ) {
     try {
-      const categories = this.categoriesService.findAll();
+      const categories = await this.categoriesService.findAll();
 
       return {
         body: {
@@ -58,12 +61,12 @@ export class CategoriesController {
 
   @Get('/:categoryId')
   // Indicamos que vamos a recibir un parámetro llamado categoryId (Lo convertimos en numerico gracias al pipe ParseIntPipe) y accediendo al responde de tipo Response Express
-  getCategory(
+  async getCategory(
     @Res() res: Response,
     @Param('categoryId', ParseIntPipe) categoryId: number,
   ) {
     try {
-      const category = this.categoriesService.findOne(categoryId);
+      const category = await this.categoriesService.findOne(categoryId);
 
       res.status(HttpStatus.OK).send({
         body: {
@@ -95,12 +98,12 @@ export class CategoriesController {
   @Put('/:categoryId')
   @HttpCode(HttpStatus.OK)
   // Indicamos que vamos a recibir data en el body y un parametro llamado categoryId (Lo convertimos en numerico gracias al pipe ParseIntPipe)
-  editCategory(
+  async editCategory(
     @Param('categoryId', ParseIntPipe) categoryId: number,
     @Body() payload: UpdateCategoryDto,
   ) {
     try {
-      const category = this.categoriesService.update(categoryId, payload);
+      const category = await this.categoriesService.update(categoryId, payload);
 
       return {
         body: {
@@ -115,9 +118,9 @@ export class CategoriesController {
   @Delete('/:categoryId')
   @HttpCode(HttpStatus.OK)
   // Indicamos que vamos a recibir un parametro llamada categoryId (Lo convertimos en numerico gracias al pipe ParseIntPipe)
-  deleteCategory(@Param('categoryId', ParseIntPipe) categoryId: number) {
+  async deleteCategory(@Param('categoryId', ParseIntPipe) categoryId: number) {
     try {
-      const category = this.categoriesService.delete(categoryId);
+      const category = await this.categoriesService.delete(categoryId);
 
       return {
         body: {

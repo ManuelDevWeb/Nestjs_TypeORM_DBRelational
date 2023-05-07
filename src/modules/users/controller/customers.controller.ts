@@ -38,9 +38,12 @@ export class CustomersController {
   // Indicamos que vamos a tener un HttpCode y enviamos un parametro del objeto HttpStatus
   @HttpCode(HttpStatus.OK)
   // Indicamos que vamos a recibir parametros de tipo query
-  getCustomers(@Query('limit') limit = 100, @Query('offset') offset = 50) {
+  async getCustomers(
+    @Query('limit') limit = 100,
+    @Query('offset') offset = 50,
+  ) {
     try {
-      const customers = this.customersService.findAll();
+      const customers = await this.customersService.findAll();
 
       return {
         body: {
@@ -58,12 +61,12 @@ export class CustomersController {
 
   @Get('/:customerId')
   // Indicamos que vamos a recibir un parámetro llamado customerId (Lo convertimos en numerico gracias al pipe ParseIntPipe) y accediendo al responde de tipo Response Express
-  getCustomer(
+  async getCustomer(
     @Res() res: Response,
     @Param('customerId', ParseIntPipe) customerId: number,
   ) {
     try {
-      const customer = this.customersService.findOne(customerId);
+      const customer = await this.customersService.findOne(customerId);
 
       res.status(HttpStatus.OK).send({
         body: {
@@ -95,12 +98,15 @@ export class CustomersController {
   @Put('/:customerId')
   @HttpCode(HttpStatus.OK)
   // Indicamos que vamos a recibir data en el body y un parametro llamado customerId (Lo convertimos en numerico gracias al pipe ParseIntPipe)
-  editCustomer(
+  async editCustomer(
     @Param('customerId', ParseIntPipe) customerId: number,
     @Body() payload: UpdateCustomerDto,
   ) {
     try {
-      const customerEdited = this.customersService.update(customerId, payload);
+      const customerEdited = await this.customersService.update(
+        customerId,
+        payload,
+      );
 
       return {
         body: {
@@ -115,9 +121,9 @@ export class CustomersController {
   @Delete('/:customerId')
   @HttpCode(HttpStatus.OK)
   // Indicamos que vamos a recibir un parametro llamado customerId (Lo convertimos en numero gracias al pipe ParseIntPipe)
-  deleteCustomer(@Param('customerId', ParseIntPipe) customerId: number) {
+  async deleteCustomer(@Param('customerId', ParseIntPipe) customerId: number) {
     try {
-      const customerDeleted = this.customersService.delete(customerId);
+      const customerDeleted = await this.customersService.delete(customerId);
 
       return {
         body: {

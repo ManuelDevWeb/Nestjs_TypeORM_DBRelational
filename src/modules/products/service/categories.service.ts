@@ -1,29 +1,24 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm/dist';
+import { Repository } from 'typeorm';
 
 // Importando la clase (interface) Category
 import { Category } from '../entities/category.entity';
 
 // Importando el DTO (Data Transfer Object)
-import {
-  CreateCategoryDto,
-  UpdateCategoryDto,
-} from '../dtos/categories.dto';
+import { CreateCategoryDto, UpdateCategoryDto } from '../dtos/categories.dto';
 
 @Injectable() // Indicamos que la clase puede ser inyectada en otros lugares
 export class CategoriesService {
-  private counter = 1;
-
-  // Array privado de categorias, solo accesible desde la clase
-  private categories: Category[] = [
-    {
-      id: 1,
-      name: 'Category 1',
-    },
-  ];
+  constructor(
+    // Inyectando el repositorio de la entidad Category
+    @InjectRepository(Category)
+    private categoryRepository: Repository<Category>,
+  ) {}
 
   // Metodo para obtener todas las categorias
-  findAll() {
-    const categories = this.categories;
+  async findAll() {
+    const categories = await this.categoryRepository.find();
 
     if (categories.length === 0) {
       throw new HttpException(
@@ -36,8 +31,8 @@ export class CategoriesService {
   }
 
   // Metodo para obtener categoria por id
-  findOne(id: number) {
-    const category = this.categories.find((item) => item.id === id);
+  async findOne(id: number) {
+    const category = await this.categoryRepository.findOne(id);
 
     if (!category) {
       throw new HttpException(
@@ -51,50 +46,31 @@ export class CategoriesService {
 
   // Metodo para crear una categoria
   create(payload: CreateCategoryDto) {
-    // Incrementamos el contador
-    this.counter++;
+    const newCategory = this.categoryRepository.create(payload);
 
-    const newCategory: Category = {
-      id: this.counter,
-      ...payload,
-    };
-
-    this.categories.push(newCategory);
-
-    return newCategory;
+    return this.categoryRepository.save(newCategory);
   }
 
   // Metodo para editar una categoria
-  update(id: number, payload: UpdateCategoryDto) {
+  async update(id: number, payload: UpdateCategoryDto) {
     // Buscamos la categoria por id
-    const category = this.findOne(id);
+    const category = await this.findOne(id);
 
     if (category) {
-      // Obtenemos el indice de la categoria
-      const index = this.categories.findIndex((item) => item.id === id);
-
-      this.categories[index] = {
-        ...category,
-        ...payload,
-      };
-
-      return this.categories[index];
+      // Actualizamos los nuevos datos en base a la categoria encontrada
+      this.categoryRepository.merge(category, payload);
+      return this.categoryRepository.save(category);
     }
   }
 
   // Metodo para eliminar una categoria
-  delete(id: number) {
+  async delete(id: number) {
     // Buscamos la categoria por id
-    const category = this.findOne(id);
+    const category = await this.findOne(id);
 
     if (category) {
-      // Obtenemos el indice de la categoria
-      const index = this.categories.findIndex((item) => item.id === id);
-
       // Eliminamos la categoria
-      this.categories.splice(index, 1);
-
-      return true;
+      return this.categoryRepository.delete(id);
     }
   }
 }

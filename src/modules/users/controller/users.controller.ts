@@ -38,9 +38,9 @@ export class UsersController {
   // Indicamos que vamos a tener un HttpCode y enviamos un parametro del objeto HttpStatus
   @HttpCode(HttpStatus.OK)
   // Indicamos que vamos a recibir parametros de tipo query
-  getUsers(@Query('limit') limit = 100, @Query('offset') offset = 50) {
+  async getUsers(@Query('limit') limit = 100, @Query('offset') offset = 50) {
     try {
-      const users = this.usersService.findAll();
+      const users = await this.usersService.findAll();
 
       return {
         body: {
@@ -63,9 +63,12 @@ export class UsersController {
 
   @Get('/:userId')
   // Indicamos que vamos a recibir un parámetro llamado userId (Lo convertimos en numerico gracias al pipe ParseIntPipe) y accediendo al responde de tipo Response Express
-  getUser(@Res() res: Response, @Param('userId', ParseIntPipe) userId: number) {
+  async getUser(
+    @Res() res: Response,
+    @Param('userId', ParseIntPipe) userId: number,
+  ) {
     try {
-      const user = this.usersService.findOne(userId);
+      const user = await this.usersService.findOne(userId);
 
       res.status(HttpStatus.OK).send({
         body: {
@@ -111,12 +114,12 @@ export class UsersController {
   @Put('/:userId')
   @HttpCode(HttpStatus.OK)
   // Indicamos que vamos a recibir data en el body y un parametro llamado userId (Lo convertimos en numerico gracias al pipe ParseIntPipe)
-  editUser(
+  async editUser(
     @Param('userId', ParseIntPipe) userId: number,
     @Body() payload: UpdateUserDto,
   ) {
     try {
-      const userEdited = this.usersService.update(userId, payload);
+      const userEdited = await this.usersService.update(userId, payload);
 
       return {
         body: {
@@ -131,9 +134,9 @@ export class UsersController {
   @Delete('/:userId')
   @HttpCode(HttpStatus.OK)
   // Indicamos que vamos a recibir un parametro llamado userId (Lo convertimos en numero gracias al pipe ParseIntPipe)
-  deleteUser(@Param('userId', ParseIntPipe) userId: number) {
+  async deleteUser(@Param('userId', ParseIntPipe) userId: number) {
     try {
-      const userDeleted = this.usersService.delete(userId);
+      const userDeleted = await this.usersService.delete(userId);
 
       return {
         body: {

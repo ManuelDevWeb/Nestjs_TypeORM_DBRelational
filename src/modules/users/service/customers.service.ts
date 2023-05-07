@@ -1,4 +1,6 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 // Importando la clase (interface) Customer
 import { Customer } from '../entities/customer.entity';
@@ -8,35 +10,29 @@ import { CreateCustomerDto, UpdateCustomerDto } from '../dtos/customers.dto';
 
 @Injectable() // Indicamos que la clase puede ser inyectada en otros lugares
 export class CustomersService {
-  private counter = 1;
-
-  // Array privado de customers, solo accesible desde la clase
-  private customers: Customer[] = [
-    {
-      id: 1,
-      name: 'Manuel',
-      lastName: 'Valencia',
-      phone: '+57 3165477012',
-    },
-  ];
+  constructor(
+    // Inyectando el repositorio de la entidad Customer
+    @InjectRepository(Customer)
+    private customerRepository: Repository<Customer>,
+  ) {}
 
   // Metodo para obtener todos los customers
-  findAll() {
-    const customers = this.customers;
+  async findAll() {
+    const customer = await this.customerRepository.find();
 
-    if (customers.length === 0) {
+    if (customer.length === 0) {
       throw new HttpException(
-        `There aren't any customers`,
+        `There aren't any customer`,
         HttpStatus.NOT_FOUND,
       );
     }
 
-    return customers;
+    return customer;
   }
 
   // Metodo para obtener un customer
-  findOne(id: number) {
-    const customer = this.customers.find((item) => item.id === id);
+  async findOne(id: number) {
+    const customer = await this.customerRepository.findOne(id);
 
     if (!customer) {
       throw new HttpException(
@@ -50,46 +46,28 @@ export class CustomersService {
 
   // Metodo para crear un customer
   create(payload: CreateCustomerDto) {
-    this.counter++;
-
-    const newCustomer = {
-      id: this.counter,
-      ...payload,
-    };
-
-    this.customers.push(newCustomer);
-
-    return newCustomer;
+    const newCustomer = this.customerRepository.create(payload);
+    return this.customerRepository.save(newCustomer);
   }
 
   // Metodo para actualizar un customer
-  update(id: number, payload: UpdateCustomerDto) {
-    const customer = this.findOne(id);
+  async update(id: number, payload: UpdateCustomerDto) {
+    const customer = await this.findOne(id);
 
     if (customer) {
-      // Obtenemos el indice del elemento
-      const index = this.customers.findIndex((item) => item.id === id);
-
-      this.customers[index] = {
-        ...customer,
-        ...payload,
-      };
-
-      return this.customers[index];
+      // Actualizamos los nuevos datos en base al customer encontrado
+      this.customerRepository.merge(customer, payload);
+      return this.customerRepository.save(customer);
     }
   }
 
   // Metodo para eliminar un customer
-  delete(id: number) {
-    const customer = this.findOne(id);
+  async delete(id: number) {
+    const customer = await this.findOne(id);
 
     if (customer) {
-      // Obtenemos el indice del elemento
-      const index = this.customers.findIndex((item) => item.id === id);
-
-      this.customers.splice(index, 1);
-
-      return true;
+      // Eliminamos el customer
+      return this.customerRepository.delete(id);
     }
   }
 }

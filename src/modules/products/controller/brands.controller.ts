@@ -37,9 +37,9 @@ export class BrandsController {
   // Indicamos que vamos a tener un HttpCode y enviamos un parametro del obketo HttpStatus
   @HttpCode(HttpStatus.OK)
   // Indicamos que vamos a recibir parametros de tipo query
-  getBrands(@Query('limit') limit = 100, @Query('offset') offset = 50) {
+  async getBrands(@Query('limit') limit = 100, @Query('offset') offset = 50) {
     try {
-      const brands = this.brandsService.findAll();
+      const brands = await this.brandsService.findAll();
 
       return {
         body: {
@@ -57,12 +57,12 @@ export class BrandsController {
 
   @Get('/:brandId')
   // Indicamos que vamos a recibir un parámetro llamado brandId (Lo convertimos en numerico gracias al pipe ParseIntPipe) y accediendo al responde de tipo Response Express
-  getBrand(
+  async getBrand(
     @Res() res: Response,
     @Param('brandId', ParseIntPipe) brandId: number,
   ) {
     try {
-      const brand = this.brandsService.findOne(brandId);
+      const brand = await this.brandsService.findOne(brandId);
 
       res.status(HttpStatus.OK).send({
         body: {
@@ -94,12 +94,12 @@ export class BrandsController {
   @Put('/:brandId')
   @HttpCode(HttpStatus.OK)
   // Indicamos que vamos a recibir data en el body y un parametro llamado brandId (Lo convertimos en numerico gracias al pipe ParseIntPipe)
-  editBrand(
+  async editBrand(
     @Param('brandId', ParseIntPipe) brandId: number,
     @Body() payload: UpdateBrandDto,
   ) {
     try {
-      const brandUpdated = this.brandsService.update(brandId, payload);
+      const brandUpdated = await this.brandsService.update(brandId, payload);
 
       return {
         body: {
@@ -114,9 +114,9 @@ export class BrandsController {
   @Delete('/:brandId')
   @HttpCode(HttpStatus.OK)
   // Indicamos que vamos a recibir un parametro llamado brandId (Lo convertimos en numero gracias al pipe ParseIntPipe)
-  deleteBrand(@Param('brandId', ParseIntPipe) brandId: number) {
+  async deleteBrand(@Param('brandId', ParseIntPipe) brandId: number) {
     try {
-      const brandDeleted = this.brandsService.delete(brandId);
+      const brandDeleted = await this.brandsService.delete(brandId);
 
       return {
         body: {

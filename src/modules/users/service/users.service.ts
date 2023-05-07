@@ -1,4 +1,7 @@
 import { Injectable, HttpException, HttpStatus, Inject } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+
 // Permite instanciar un objeto con la config
 import { ConfigType } from '@nestjs/config';
 // Importando tipado de config
@@ -25,40 +28,29 @@ export class UsersService {
     @Inject(config.KEY) private configService: ConfigType<typeof config>,
     // Inyectando dependencia de tipo useFactory (Conexion a la DB)
     @Inject('PG_CONNECTION') private clientPg: Client,
+    // Inyectando el repositorio de la entidad User
+    @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
 
-  private counter = 1;
-
-  // Array privado de users, solo accesible desde la clase
-  private users: User[] = [
-    {
-      id: 1,
-      email: 'manuel@gmail.com',
-      password: '1234Ab*',
-      role: 'admin',
-    },
-  ];
-
   // Metodo para obtener todos los usuarios
-  findAll() {
-    const users = this.users;
+  async findAll() {
+    // const apiKey = this.configService.apiKey;
+    // const dbName = this.configService.database.port;
+    // console.log('Api key', apiKey);
+    // console.log('DB: ', dbName);
 
-    const apiKey = this.configService.apiKey;
-    const dbName = this.configService.database.port;
-
-    console.log('Api key', apiKey);
-    console.log('DB: ', dbName);
+    const users = await this.userRepository.find();
 
     if (users.length === 0) {
-      throw new HttpException(`There aren't any users`, HttpStatus.NOT_FOUND);
+      throw new HttpException('No users found', HttpStatus.NOT_FOUND);
     }
 
     return users;
   }
 
   // Metodo para obtener un usuario
-  findOne(id: number) {
-    const user = this.users.find((item) => item.id === id);
+  async findOne(id: number) {
+    const user = await this.userRepository.findOne(id);
 
     if (!user) {
       throw new HttpException(
@@ -83,46 +75,27 @@ export class UsersService {
 
   // Metodo para crear un usuario
   create(payload: CreateUserDto) {
-    this.counter++;
-
-    const newUser = {
-      id: this.counter,
-      ...payload,
-    };
-
-    this.users.push(newUser);
-
-    return newUser;
+    const newUser = this.userRepository.create(payload);
+    return this.userRepository.save(newUser);
   }
 
   // Metodo para actualizar un usuario
-  update(id: number, payload: UpdateUserDto) {
-    const user = this.findOne(id);
+  async update(id: number, payload: UpdateUserDto) {
+    const user = await this.findOne(id);
 
     if (user) {
-      // Obtenemos el indice del elemento
-      const index = this.users.findIndex((item) => item.id === id);
-
-      this.users[index] = {
-        ...user,
-        ...payload,
-      };
-
-      return this.users[index];
+      // Actualizamos los nuevos datos en base al usuario encontrado
+      this.userRepository.merge(user, payload);
+      return this.userRepository.save(user);
     }
   }
 
   // Metodo para eliminar un usuario
-  delete(id: number) {
-    const user = this.findOne(id);
+  async delete(id: number) {
+    const user = await this.findOne(id);
 
     if (user) {
-      // Obtenemos el indice del elemento
-      const index = this.users.findIndex((item) => item.id === id);
-
-      this.users.splice(index, 1);
-
-      return true;
+      return this.userRepository.delete(user);
     }
   }
 

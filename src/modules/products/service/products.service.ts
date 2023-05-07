@@ -16,13 +16,32 @@ export class ProductsService {
   ) {}
 
   // Método para obtener todos los productos
-  findAll() {
-    return this.productRepository.find();
+  async findAll() {
+    const products = await this.productRepository.find();
+
+    if (products.length === 0) {
+      throw new HttpException(`There aren't any product`, HttpStatus.NOT_FOUND);
+    }
   }
+
+  // findAll() {
+  //   const products = new Promise((resolve, reject) => {
+  //     this.productRepository
+  //       .find()
+  //       .then((products) => {
+  //         resolve(products);
+  //       })
+  //       .catch((error) => {
+  //         reject(error);
+  //       });
+  //   });
+
+  //   return products;
+  // }
 
   // Método para obtener un producto por id
   async findOne(id: number) {
-    const product = this.productRepository.findOne(id);
+    const product = await this.productRepository.findOne(id);
 
     if (!product) {
       throw new HttpException(`Product #${id} not found`, HttpStatus.NOT_FOUND);

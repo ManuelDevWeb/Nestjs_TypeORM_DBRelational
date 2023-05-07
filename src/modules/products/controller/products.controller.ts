@@ -40,7 +40,7 @@ export class ProductsController {
   // Indicamos que vamos a tener un HttpCode y enviamos un parametro del objeto HttpStatus (Tambien podriamos enviar uno personalizado -> @HttpCode(200))
   @HttpCode(HttpStatus.OK)
   // Indicamos que vamos a recibir parametros tipo query
-  getProducts(
+  async getProducts(
     @Query('limit') limit = 100,
     @Query('offset') offset = 50,
     @Query('brand') brand?: string,
@@ -52,23 +52,27 @@ export class ProductsController {
     //     brand,
     //   },
     // };
-    const products = this.productsService.findAll();
+    try {
+      const products = await this.productsService.findAll();
 
-    return {
-      body: {
-        data: products,
-        pagination: {
-          limit,
-          offset,
-          brand,
+      return {
+        body: {
+          data: products,
+          pagination: {
+            limit,
+            offset,
+            brand,
+          },
         },
-      },
-    };
+      };
+    } catch (error) {
+      return error;
+    }
   }
 
   @Get('/:productId')
   // Indicamos que vamos a recibir un parámetro llamado productId (Lo convertimos en numerico gracias al pipe ParseIntPipe) y accediendo al responde de tipo Response Express
-  getProduct(
+  async getProduct(
     @Res() res: Response,
     @Param('productId', ParseIntPipe) productId: number,
   ) {
@@ -78,13 +82,17 @@ export class ProductsController {
     //     message: `Product ${productId}`,
     //   },
     // });
-    const product = this.productsService.findOne(productId);
+    try {
+      const product = await this.productsService.findOne(productId);
 
-    res.status(HttpStatus.OK).send({
-      body: {
-        data: product,
-      },
-    });
+      res.status(HttpStatus.OK).send({
+        body: {
+          data: product,
+        },
+      });
+    } catch (error) {
+      res.send(error);
+    }
   }
 
   @Post()
@@ -96,18 +104,22 @@ export class ProductsController {
     //     payload,
     //   },
     // };
-    const newProduct = this.productsService.create(payload);
+    try {
+      const newProduct = this.productsService.create(payload);
 
-    return {
-      body: {
-        data: newProduct,
-      },
-    };
+      return {
+        body: {
+          data: newProduct,
+        },
+      };
+    } catch (error) {
+      return error;
+    }
   }
 
   @Put('/:productId')
   // Indicamos que vamos a recibir data en el body y un parametro llamado productId (Lo convertimos en numerico gracias al pipe ParseIntPipe)
-  editProduct(
+  async editProduct(
     @Param('productId', ParseIntPipe) productId: number,
     @Body() payload: UpdateProductDto,
   ) {
@@ -118,18 +130,23 @@ export class ProductsController {
     //     payload,
     //   },
     // };
-    const product = this.productsService.update(productId, payload);
 
-    return {
-      body: {
-        data: product,
-      },
-    };
+    try {
+      const product = await this.productsService.update(productId, payload);
+
+      return {
+        body: {
+          data: product,
+        },
+      };
+    } catch (error) {
+      return error;
+    }
   }
 
   @Delete('/:productId')
   // Indicamos que vamos a recibir un parametro llamada productId (Lo convertimos en numerico gracias al pipe ParseIntPipe)
-  deleteProduct(@Param('productId', ParseIntPipe) productId: number) {
+  async deleteProduct(@Param('productId', ParseIntPipe) productId: number) {
     // return {
     //   body: {
     //     message: 'Accion de eliminar',
@@ -138,7 +155,7 @@ export class ProductsController {
     // };
 
     try {
-      const product = this.productsService.delete(productId);
+      const product = await this.productsService.delete(productId);
 
       return {
         body: {

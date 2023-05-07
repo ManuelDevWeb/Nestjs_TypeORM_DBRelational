@@ -1,4 +1,6 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 // Importando la clase (interface) Brand
 import { Brand } from '../entities/brand.entity';
@@ -8,20 +10,14 @@ import { CreateBrandDto, UpdateBrandDto } from '../dtos/brands.dto';
 
 @Injectable() // Indicamos que la clase puede ser inyectada en otros lugares
 export class BrandsService {
-  private counter = 1;
-
-  // Array privado de brands, solo accesible desde la clase
-  private brands: Brand[] = [
-    {
-      id: 1,
-      name: 'Brand 1',
-      imagen: 'google.com',
-    },
-  ];
+  constructor(
+    // Inyectando el repositorio de la entidad Brand
+    @InjectRepository(Brand) private brandRepository: Repository<Brand>,
+  ) {}
 
   // Metodo para obtener todas las brands
-  findAll() {
-    const brands = this.brands;
+  async findAll() {
+    const brands = await this.brandRepository.find();
 
     if (brands.length === 0) {
       throw new HttpException(`There aren't any brand`, HttpStatus.NOT_FOUND);
@@ -31,8 +27,8 @@ export class BrandsService {
   }
 
   // Metodo para obtener brand por id
-  findOne(id: number) {
-    const brand = this.brands.find((item) => item.id === id);
+  async findOne(id: number) {
+    const brand = await this.brandRepository.findOne(id);
 
     if (!brand) {
       throw new HttpException(
@@ -46,47 +42,29 @@ export class BrandsService {
 
   // Metodo para crear una brand
   create(payload: CreateBrandDto) {
-    this.counter++;
+    const newBrand = this.brandRepository.create(payload);
 
-    const newBrand: Brand = {
-      id: this.counter,
-      ...payload,
-    };
-
-    this.brands.push(newBrand);
-
-    return newBrand;
+    return this.brandRepository.save(newBrand);
   }
 
   // Metodo para editar una brand
-  update(id: number, payload: UpdateBrandDto) {
-    const brand = this.findOne(id);
+  async update(id: number, payload: UpdateBrandDto) {
+    const brand = await this.findOne(id);
 
     if (brand) {
-      // Obtenemos el indice del elemento
-      const index = this.brands.findIndex((item) => item.id === id);
-
-      this.brands[index] = {
-        ...brand,
-        ...payload,
-      };
-
-      return this.brands[index];
+      // Actualizamos los nuevos datos en base al brand encontrado
+      this.brandRepository.merge(brand, payload);
+      return this.brandRepository.save(brand);
     }
   }
 
   // Metodo para eliminar una brand
-  delete(id: number) {
-    const brand = this.findOne(id);
+  async delete(id: number) {
+    const brand = await this.findOne(id);
 
     if (brand) {
-      // Obtenemos el indice del elemento
-      const index = this.brands.findIndex((item) => item.id === id);
-
       // Eliminamos la brand
-      this.brands.splice(index, 1);
-
-      return true;
+      return this.brandRepository.delete(id);
     }
   }
 }
