@@ -32,7 +32,7 @@ export class CategoriesService {
 
   // Metodo para obtener categoria por id
   async findOne(id: number) {
-    const category = await this.categoryRepository.findOne(id);
+    const category = await this.categoryRepository.findOne({ where: { id } });
 
     if (!category) {
       throw new HttpException(

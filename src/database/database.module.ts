@@ -28,7 +28,7 @@ const API_KEY = '12345';
           username: user, // Usuario de la DB
           password, // Contraseña de la DB
           database: dbName, // Nombre de la DB
-          synchronize: true, // Sincronizar las entidades con la DB
+          synchronize: false, // Sincronizar las entidades con la DB (Solo se recomienda usar en dev y stage)
           autoLoadEntities: true, // Cargar las entidades automaticamente
         };
       },

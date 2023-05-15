@@ -28,7 +28,7 @@ export class BrandsService {
 
   // Metodo para obtener brand por id
   async findOne(id: number) {
-    const brand = await this.brandRepository.findOne(id);
+    const brand = await this.brandRepository.findOne({ where: { id } });
 
     if (!brand) {
       throw new HttpException(

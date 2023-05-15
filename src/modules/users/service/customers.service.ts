@@ -32,7 +32,7 @@ export class CustomersService {
 
   // Metodo para obtener un customer
   async findOne(id: number) {
-    const customer = await this.customerRepository.findOne(id);
+    const customer = await this.customerRepository.findOne({ where: { id } });
 
     if (!customer) {
       throw new HttpException(

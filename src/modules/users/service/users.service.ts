@@ -50,7 +50,7 @@ export class UsersService {
 
   // Metodo para obtener un usuario
   async findOne(id: number) {
-    const user = await this.userRepository.findOne(id);
+    const user = await this.userRepository.findOne({ where: { id } });
 
     if (!user) {
       throw new HttpException(
