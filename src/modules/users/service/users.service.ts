@@ -18,12 +18,16 @@ import { CreateUserDto, UpdateUserDto } from '../dtos/users.dto';
 
 // Importando servicio de products
 import { ProductsService } from '../../products/service/products.service';
+// Importando servicio de customers
+import { CustomersService } from './customers.service';
 
 @Injectable() // Indicamos que la clase puede ser inyectada en otros lugares
 export class UsersService {
   constructor(
     // Inyectando dependencias (Se crea automaticamente una instancia de la clase ProductsService y se inyecta en el constructor)
     private productsService: ProductsService,
+    // Inyectando dependencias (Se crea automaticamente una instancia de la clase CustomersService y se inyecta en el constructor)
+    private customersService: CustomersService,
     // Inyectando dependencia (Config module)
     @Inject(config.KEY) private configService: ConfigType<typeof config>,
     // Inyectando dependencia de tipo useFactory (Conexion a la DB)
@@ -39,7 +43,10 @@ export class UsersService {
     // console.log('Api key', apiKey);
     // console.log('DB: ', dbName);
 
-    const users = await this.userRepository.find();
+    const users = await this.userRepository.find(
+      // Indicando que resuelva las relaciones que tenga la tabla (customer viene de la entidad user)
+      { relations: ['customer'] },
+    );
 
     if (users.length === 0) {
       throw new HttpException('No users found', HttpStatus.NOT_FOUND);
@@ -50,7 +57,7 @@ export class UsersService {
 
   // Metodo para obtener un usuario
   async findOne(id: number) {
-    const user = await this.userRepository.findOne({ where: { id } });
+    const user = await this.userRepository.findOneBy({ id });
 
     if (!user) {
       throw new HttpException(
@@ -74,8 +81,15 @@ export class UsersService {
   }
 
   // Metodo para crear un usuario
-  create(payload: CreateUserDto) {
+  async create(payload: CreateUserDto) {
     const newUser = this.userRepository.create(payload);
+
+    // Si viene el customerId, buscamos el customer
+    if (payload.customerId) {
+      const customer = await this.customersService.findOne(payload.customerId);
+      newUser.customer = customer;
+    }
+
     return this.userRepository.save(newUser);
   }
 

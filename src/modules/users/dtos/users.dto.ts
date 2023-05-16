@@ -8,7 +8,13 @@
 // - No olvidar el ValidationPipe en el main.ts
 
 // Importando class validator para validar los datos con decoradores
-import { IsString, IsNotEmpty, IsEmail } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsEmail,
+  IsPositive,
+  IsOptional,
+} from 'class-validator';
 // Mapped Types nos ayuda a reutilizar codigo (Es caso de querer documentar, importar de swagger y no de mapped-types)
 import { PartialType, ApiProperty } from '@nestjs/swagger';
 
@@ -27,6 +33,12 @@ export class CreateUserDto {
   @IsNotEmpty()
   @ApiProperty({ description: 'Role of user' })
   readonly role: string;
+
+  @IsPositive()
+  @IsOptional()
+  @ApiProperty({ description: 'Id of customer' })
+  // Tener en cuenta quien carga con la referencia
+  readonly customerId: number;
 }
 
 // PartialType toma nuestro DTO base y crea un nuevo DTO agregando las validaciones y el signo ? a todas las propiedades
