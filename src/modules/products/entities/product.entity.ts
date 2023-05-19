@@ -6,10 +6,13 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
+  ManyToMany,
+  JoinTable,
 } from 'typeorm';
 
 // Importando entidad a relacionar
 import { Brand } from './brand.entity';
+import { Category } from './category.entity';
 
 @Entity()
 export class Product {
@@ -39,6 +42,12 @@ export class Product {
 
   // Relacion Muchos a uno (Un producto puede tener muchas marcas, indicamos quien tiene la referencia desde la tabla de brand a product)
   @ManyToOne(() => Brand, (brand) => brand.products)
-  // ManyToOne viene internamente con el joinColumn()
+  // ManyToOne viene internamente con el joinColumn() y carga con la referencia
   brand: Brand;
+
+  // Relacion Muchos a muchos (Un producto puede tener muchas categorias, indicamos quien tiene la referencia desde la tabla de category a product)
+  @ManyToMany(() => Category, (category) => category.products)
+  // JoinTable() solo debe ir en una de las 2 y crea la tabla intermedia
+  @JoinTable()
+  categories: Category[];
 }

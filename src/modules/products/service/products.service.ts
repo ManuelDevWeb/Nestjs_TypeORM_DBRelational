@@ -1,9 +1,13 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Between, FindOptionsWhere, Repository } from 'typeorm';
+import { Between, FindOptionsWhere, Repository, In } from 'typeorm';
 
 // Importando la clase (interface) Product
 import { Product } from '../entities/product.entity';
+// Importando la clase (interface) Category
+import { Category } from '../entities/category.entity';
+// Importando la clase (interface) Brand
+import { Brand } from '../entities/brand.entity';
 
 // Importando el DTO (Data Transfer Object)
 import { CreateProductDto, UpdateProductDto } from '../dtos/products.dto';
@@ -20,6 +24,11 @@ export class ProductsService {
     private brandsService: BrandsService,
     // Inyectando el repositorio de la entidad Product
     @InjectRepository(Product) private productRepository: Repository<Product>,
+    // Inyectando el repositorio de la entidad Category
+    @InjectRepository(Category)
+    private categoryRepository: Repository<Category>,
+    // Inyectando el repositorio de la entidad Brand
+    @InjectRepository(Brand) private brandRepository: Repository<Brand>,
   ) {
     // Debemos pasarle el repositorio de la entidad al constructor de la clase padre
     // super(productRepository);
@@ -29,7 +38,7 @@ export class ProductsService {
   async findAll() {
     const products = await this.productRepository.find(
       // Indicando que resuelva las relaciones que tenga la tabla (brand viene de la entidad product)
-      { relations: ['brand'] },
+      { relations: ['brand', 'categories'] },
     );
 
     if (products.length === 0) {
@@ -56,7 +65,16 @@ export class ProductsService {
 
   // Método para obtener un producto por id
   async findOne(id: number) {
-    const product = await this.productRepository.findOne({ where: { id } });
+    const product = await this.productRepository.findOne(
+      // Filtrando por id
+      {
+        where: {
+          id,
+        },
+        // Indicando que resuelva las relaciones que tenga la tabla (brand viene de la entidad product y categories de la entidad product)
+        relations: ['brand', 'categories'],
+      },
+    );
 
     if (!product) {
       throw new HttpException(`Product #${id} not found`, HttpStatus.NOT_FOUND);
@@ -70,8 +88,18 @@ export class ProductsService {
     const newProduct = this.productRepository.create(payload);
 
     if (payload.brandId) {
-      const brand = await this.brandsService.findOne(payload.brandId);
+      const brand = await this.brandRepository.findOneBy({
+        id: payload.brandId,
+      });
       newProduct.brand = brand;
+    }
+
+    if (payload.categoriesId) {
+      // Buscamos las categorias por id, segun el payload que nos llega
+      const categories = await this.categoryRepository.findBy({
+        id: In(payload.categoriesId),
+      });
+      newProduct.categories = categories;
     }
 
     return this.productRepository.save(newProduct);
