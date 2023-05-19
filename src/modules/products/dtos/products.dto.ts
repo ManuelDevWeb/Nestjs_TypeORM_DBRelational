@@ -46,6 +46,12 @@ export class CreateProductDto {
   @IsNotEmpty()
   @ApiProperty({ description: 'Image of product' })
   readonly image: string;
+
+  @IsPositive()
+  @IsNotEmpty()
+  @ApiProperty({ description: 'Id of brand' })
+  // Tener en cuenta quien carga con la referencia
+  readonly brandId: number;
 }
 
 // PartialType toma nuestro DTO base y crea un nuevo DTO agregando las validaciones y el signo ? a cada propiedad

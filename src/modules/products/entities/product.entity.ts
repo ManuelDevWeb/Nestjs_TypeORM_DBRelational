@@ -5,7 +5,11 @@ import {
   Entity,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToOne,
 } from 'typeorm';
+
+// Importando entidad a relacionar
+import { Brand } from './brand.entity';
 
 @Entity()
 export class Product {
@@ -32,4 +36,9 @@ export class Product {
 
   @UpdateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
   updateAt: Date;
+
+  // Relacion Muchos a uno (Un producto puede tener muchas marcas, indicamos quien tiene la referencia desde la tabla de brand a product)
+  @ManyToOne(() => Brand, (brand) => brand.products)
+  // ManyToOne viene internamente con el joinColumn()
+  brand: Brand;
 }

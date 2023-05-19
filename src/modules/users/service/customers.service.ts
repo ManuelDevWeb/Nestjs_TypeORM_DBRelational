@@ -18,7 +18,10 @@ export class CustomersService {
 
   // Metodo para obtener todos los customers
   async findAll() {
-    const customer = await this.customerRepository.find();
+    const customer = await this.customerRepository.find(
+      // Indicando que resuelva las relaciones que tenga la tabla (products viene de la entidad brand)
+      { relations: ['products'] },
+    );
 
     if (customer.length === 0) {
       throw new HttpException(

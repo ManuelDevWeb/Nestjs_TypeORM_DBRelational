@@ -28,7 +28,14 @@ export class BrandsService {
 
   // Metodo para obtener brand por id
   async findOne(id: number) {
-    const brand = await this.brandRepository.findOne({ where: { id } });
+    const brand = await this.brandRepository.findOne({
+      // Filtrando por id
+      where: {
+        id,
+      },
+      // Indicando que resuelva las relaciones que tenga la tabla (customer viene de la entidad user)
+      relations: ['products'],
+    });
 
     if (!brand) {
       throw new HttpException(
