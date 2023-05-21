@@ -123,6 +123,53 @@ export class ProductsService {
     }
   }
 
+  // Método para remover una categoria a un producto
+  async removeCategoryByProduct(productId: number, categoryId: number) {
+    // Obtenemos el producto
+    const product = await this.productRepository.findOne({
+      // Filtramos por id
+      where: {
+        id: productId,
+      },
+      // Indicando que resuelva las relaciones que tenga la tabla (categories de la entidad product)
+      relations: ['categories'],
+    });
+
+    // Filtramos las categorias del producto, para eliminar la categoria que nos llega por parametro
+    product.categories = product.categories.filter(
+      (category) => category.id !== categoryId,
+    );
+
+    // Guardamos el producto
+    return this.productRepository.save(product);
+  }
+
+  // Metodo para agregar una categoria a un producto
+  async addCategoryByProduct(productId: number, categoryId: number) {
+    // Obtenemos el producto
+    const product = await this.productRepository.findOne({
+      // Filtramos por id
+      where: {
+        id: productId,
+      },
+      // Indicando que resuelva las relaciones que tenga la tabla (categories de la entidad product)
+      relations: ['categories'],
+    });
+
+    // Buscamos la categoria por id
+    const category = await this.categoryRepository.findOne({
+      where: {
+        id: categoryId,
+      },
+    });
+
+    // Agregamos la categoria al producto
+    product.categories.push(category);
+
+    // Guardamos el producto
+    return this.productRepository.save(product);
+  }
+
   // Método para eliminar un producto
   async delete(id: number) {
     // Buscamos el producto por id

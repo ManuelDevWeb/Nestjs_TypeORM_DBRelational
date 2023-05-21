@@ -144,6 +144,28 @@ export class ProductsController {
     }
   }
 
+  @Put('/:productId/category/:categoryId')
+  // Indicamos que vamos a recibir dos parametros llamados productId y categoryId (Lo convertimos en numerico gracias al pipe ParseIntPipe)
+  async addProductCategory(
+    @Param('productId', ParseIntPipe) productId: number,
+    @Param('categoryId', ParseIntPipe) categoryId: number,
+  ) {
+    try {
+      const product = await this.productsService.addCategoryByProduct(
+        productId,
+        categoryId,
+      );
+
+      return {
+        body: {
+          data: product,
+        },
+      };
+    } catch (error) {
+      return error;
+    }
+  }
+
   @Delete('/:productId')
   // Indicamos que vamos a recibir un parametro llamada productId (Lo convertimos en numerico gracias al pipe ParseIntPipe)
   async deleteProduct(@Param('productId', ParseIntPipe) productId: number) {
@@ -156,6 +178,28 @@ export class ProductsController {
 
     try {
       const product = await this.productsService.delete(productId);
+
+      return {
+        body: {
+          data: product,
+        },
+      };
+    } catch (error) {
+      return error;
+    }
+  }
+
+  @Delete('/:productId/category/:categoryId')
+  // Indicamos que vamos a recibir dos parametros llamados productId y categoryId (Lo convertimos en numerico gracias al pipe ParseIntPipe)
+  async deleteProductCategory(
+    @Param('productId', ParseIntPipe) productId: number,
+    @Param('categoryId', ParseIntPipe) categoryId: number,
+  ) {
+    try {
+      const product = await this.productsService.removeCategoryByProduct(
+        productId,
+        categoryId,
+      );
 
       return {
         body: {
