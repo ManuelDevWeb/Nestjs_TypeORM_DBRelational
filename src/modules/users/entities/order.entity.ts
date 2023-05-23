@@ -1,28 +1,34 @@
-// Importando entidad User
-import { User } from './user.entity';
-// Importando entidad Productos
-import { Product } from '../../products/entities/product.entity';
 // Importando typeorm
 import {
   PrimaryGeneratedColumn,
-  Column,
   ManyToOne,
   Entity,
-  ManyToMany,
+  CreateDateColumn,
+  UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
 
+// Importando entidad a relacionar
+import { Customer } from './customer.entity';
+import { OrderItem } from './order-item.entity';
+
+@Entity()
 export class Order {
+  @PrimaryGeneratedColumn()
   id: number;
 
-  // @Column({ type: 'date', default: () => 'CURRENT_TIMESTAMP' })
-  date: Date;
+  @CreateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
+  createAt: Date;
 
-  // Indicamos que un usuario puede tener muchas ordenes (Uno a muchos)
-  // @ManyToOne()
-  user: User;
+  @UpdateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
+  updateAt: Date;
 
-  // Indicamos que una orden puede tener muchos productos (Muchos a muchos), por usar JoinTable() para generar tabla intermedia
-  // @ManyToMany()
-  // @JoinTable()
-  products: Product[];
+  // Relacion Muchos a uno (Un customer puede tener muchas ordenes, indicamos quien tiene la referencia desde la tabla de customer a order)
+  @ManyToOne(() => Customer, (customer) => customer.orders)
+  // ManyToOne viene internamente con el joinColumn() y carga con la referencia
+  customer: Customer;
+
+  // Relacion uno a muchos (Una orden puede tener muchos order-item, indicamos quien tiene la referencia desde la tabla de order a orderItem)
+  @OneToMany(() => OrderItem, (orderItem) => orderItem.order)
+  items: OrderItem[];
 }

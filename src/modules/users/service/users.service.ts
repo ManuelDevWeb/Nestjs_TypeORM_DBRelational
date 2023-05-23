@@ -11,7 +11,6 @@ import { Client } from 'pg';
 
 // Importando la clase (interface) User y Order
 import { User } from '../entities/user.entity';
-import { Order } from '../entities/order.entity';
 
 // Importando el DTO (Data Transfer Object)
 import { CreateUserDto, UpdateUserDto } from '../dtos/users.dto';

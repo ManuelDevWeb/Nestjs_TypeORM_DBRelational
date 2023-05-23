@@ -22,6 +22,7 @@ import { Product } from './entities/product.entity';
   // Indicamos los services
   providers: [ProductsService, BrandsService, CategoriesService],
   // Exportando el modulo para que otros modulos puedan usar los servicios de ProductsModule
-  exports: [ProductsService],
+  // Exportamos el typeorm module para que otros modulos puedan usarlo
+  exports: [ProductsService, TypeOrmModule],
 })
 export class ProductsModule {}

@@ -40,7 +40,7 @@ export class Product {
   @UpdateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
   updateAt: Date;
 
-  // Relacion Muchos a uno (Un producto puede tener muchas marcas, indicamos quien tiene la referencia desde la tabla de brand a product)
+  // Relacion Muchos a uno (Muchos productos pueden tener una marca, indicamos quien tiene la referencia desde la tabla de brand a product)
   @ManyToOne(() => Brand, (brand) => brand.products)
   // ManyToOne viene internamente con el joinColumn() y carga con la referencia
   brand: Brand;

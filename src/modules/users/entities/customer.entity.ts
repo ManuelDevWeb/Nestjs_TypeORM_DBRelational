@@ -6,10 +6,12 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   OneToOne,
+  OneToMany,
 } from 'typeorm';
 
 // Importando entidad a relacionar
 import { User } from './user.entity';
+import { Order } from './order.entity';
 
 @Entity()
 export class Customer {
@@ -34,4 +36,8 @@ export class Customer {
   // Relacion uno a uno y puede ser nulo (Indicamos quien tiene la referencia desde la tabla de user a customer)
   @OneToOne(() => User, (user) => user.customer, { nullable: true })
   user: User;
+
+  // Relacion uno a Mucho (Un customer puede tener muchas ordenes, indicamos quien tiene la referencia desde la tabla de order a customer)
+  @OneToMany(() => Order, (order) => order.customer)
+  orders: Order[];
 }
