@@ -43,11 +43,21 @@ export class ProductsService {
     let products = [];
 
     // Si hay parametros
-    if (params.limit || params.offset) {
+    if (params) {
+      const optionsWhere: FindOptionsWhere<Product> = {};
+
       const { limit, offset } = params;
+      const { maxPrice, minPrice } = params;
+
+      if (minPrice && maxPrice) {
+        // Filtrando por precio
+        optionsWhere.price = Between(minPrice, maxPrice);
+        // optionsWhere.price = 200;
+      }
 
       products = await this.productRepository.find({
         relations: ['brand', 'categories'],
+        where: optionsWhere,
         // Elementos que se saltan
         skip: offset,
         // Los elementos que toma

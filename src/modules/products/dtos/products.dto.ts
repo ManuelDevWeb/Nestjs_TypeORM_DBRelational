@@ -18,6 +18,7 @@ import {
   ArrayMinSize,
   IsOptional,
   Min,
+  ValidateIf,
 } from 'class-validator';
 // Mapped Types nos ayuda a reutilizar codigo (Es caso de querer documentar, importar de swagger y no de mapped-types)
 import { PartialType, ApiProperty } from '@nestjs/swagger';
@@ -78,4 +79,13 @@ export class FilterProductsDto {
   @IsOptional()
   @Min(0)
   offset: number;
+
+  @IsOptional()
+  @IsPositive()
+  minPrice: number;
+
+  // maxPrice solo se valida si minPrice existe
+  @ValidateIf((item) => item.minPrice)
+  @IsPositive()
+  maxPrice: number;
 }

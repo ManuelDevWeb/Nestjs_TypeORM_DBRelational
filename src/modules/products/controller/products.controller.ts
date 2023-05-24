@@ -52,8 +52,10 @@ export class ProductsController {
         body: {
           data: products,
           pagination: {
-            limit: params.limit,
-            offset: params.offset,
+            limit: params?.limit,
+            offset: params?.offset,
+            maxPrice: params?.maxPrice,
+            minPrice: params?.minPrice,
             // brand: params?.brand,
           },
         },
