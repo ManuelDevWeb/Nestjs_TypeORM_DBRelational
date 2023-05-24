@@ -22,7 +22,8 @@
     "migration:generate": "npm run typeorm -- migration:generate",
     "migration:run": "npm run typeorm -- migration:run",
     "migration:show": "npm run typeorm -- migration:show",
-    "migration:revert": "npm run typeorm -- migration:revert"
+    "migration:revert": "npm run typeorm -- migration:revert",
+    "migration:drop": "npm run typeorm -- schema:drop"
   },
   "dependencies": {
     "@nestjs/axios": "^2.0.0",

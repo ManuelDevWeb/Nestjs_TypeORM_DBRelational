@@ -13,7 +13,10 @@ import {
 import { User } from './user.entity';
 import { Order } from './order.entity';
 
-@Entity()
+@Entity({
+  // Nombre de la tabla en la DB
+  name: 'customers',
+})
 export class Customer {
   @PrimaryGeneratedColumn()
   id: number;
@@ -27,10 +30,20 @@ export class Customer {
   @Column({ type: 'varchar', length: 255 })
   phone: string;
 
-  @CreateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
+  @CreateDateColumn({
+    // Nombre de la columna en la DB
+    name: 'create_at',
+    type: 'timestamptz',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
   createAt: Date;
 
-  @UpdateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
+  @UpdateDateColumn({
+    // Nombre de la columna en la DB
+    name: 'update_at',
+    type: 'timestamptz',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
   updateAt: Date;
 
   // Relacion uno a uno y puede ser nulo (Indicamos quien tiene la referencia desde la tabla de user a customer)

@@ -36,6 +36,9 @@ export class User {
   // Relacion uno a uno y puede ser nulo (Indicamos quien tiene la referencia desde la tabla de customer a user)
   @OneToOne(() => Customer, (customer) => customer.user, { nullable: true })
   // Join Column solo va en una de las dos entidades y carga con la referencia
-  @JoinColumn()
+  @JoinColumn({
+    // Nombre de la columna en la DB
+    name: 'customer_id',
+  })
   customer: Customer;
 }

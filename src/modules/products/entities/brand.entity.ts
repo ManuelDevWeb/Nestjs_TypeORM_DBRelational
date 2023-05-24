@@ -11,7 +11,9 @@ import {
 // Importando entidad a relacionar
 import { Product } from './product.entity';
 
-@Entity()
+@Entity({
+  name: 'brands',
+})
 export class Brand {
   @PrimaryGeneratedColumn()
   id: number;
@@ -22,10 +24,20 @@ export class Brand {
   @Column({ type: 'varchar', length: 255 })
   imagen: string;
 
-  @CreateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
+  @CreateDateColumn({
+    // Nombre de la columna en la DB
+    name: 'create_at',
+    type: 'timestamptz',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
   createAt: Date;
 
-  @UpdateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
+  @UpdateDateColumn({
+    // Nombre de la columna en la DB
+    name: 'update_at',
+    type: 'timestamptz',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
   updateAt: Date;
 
   // Relacion uno a Mucho (Una marca puede tener muchos productos, indicamos quien tiene la referencia desde la tabla de product a brand)
