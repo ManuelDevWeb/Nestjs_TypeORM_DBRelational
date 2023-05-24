@@ -10,7 +10,11 @@ import { Category } from '../entities/category.entity';
 import { Brand } from '../entities/brand.entity';
 
 // Importando el DTO (Data Transfer Object)
-import { CreateProductDto, UpdateProductDto } from '../dtos/products.dto';
+import {
+  CreateProductDto,
+  FilterProductsDto,
+  UpdateProductDto,
+} from '../dtos/products.dto';
 
 // Importando la clase generica de servicios
 import { GenericService } from '../../../common/generic.service';
@@ -35,11 +39,26 @@ export class ProductsService {
   }
 
   // Método para obtener todos los productos
-  async findAll() {
-    const products = await this.productRepository.find(
-      // Indicando que resuelva las relaciones que tenga la tabla (brand viene de la entidad product)
-      { relations: ['brand', 'categories'] },
-    );
+  async findAll(params?: FilterProductsDto) {
+    let products = [];
+
+    // Si hay parametros
+    if (params.limit || params.offset) {
+      const { limit, offset } = params;
+
+      products = await this.productRepository.find({
+        relations: ['brand', 'categories'],
+        // Elementos que se saltan
+        skip: offset,
+        // Los elementos que toma
+        take: limit,
+      });
+    } else {
+      products = await this.productRepository.find(
+        // Indicando que resuelva las relaciones que tenga la tabla (brand viene de la entidad product)
+        { relations: ['brand', 'categories'] },
+      );
+    }
 
     if (products.length === 0) {
       throw new HttpException(`There aren't any product`, HttpStatus.NOT_FOUND);

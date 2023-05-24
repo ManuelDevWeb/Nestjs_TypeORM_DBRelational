@@ -15,7 +15,11 @@ import {
 // Importando Pipe personalizado
 import { ParseIntPipe } from '../../../common/parse-int/parse-int.pipe';
 // Importando DTO (Data Transfer Object)
-import { CreateProductDto, UpdateProductDto } from '../dtos/products.dto';
+import {
+  CreateProductDto,
+  UpdateProductDto,
+  FilterProductsDto,
+} from '../dtos/products.dto';
 
 // Importando response para manipular la res
 import { Response } from 'express';
@@ -40,28 +44,17 @@ export class ProductsController {
   // Indicamos que vamos a tener un HttpCode y enviamos un parametro del objeto HttpStatus (Tambien podriamos enviar uno personalizado -> @HttpCode(200))
   @HttpCode(HttpStatus.OK)
   // Indicamos que vamos a recibir parametros tipo query
-  async getProducts(
-    @Query('limit') limit = 100,
-    @Query('offset') offset = 50,
-    @Query('brand') brand?: string,
-  ) {
-    // return {
-    //   body: {
-    //     limit,
-    //     offset,
-    //     brand,
-    //   },
-    // };
+  async getProducts(@Query() params: FilterProductsDto) {
     try {
-      const products = await this.productsService.findAll();
+      const products = await this.productsService.findAll(params);
 
       return {
         body: {
           data: products,
           pagination: {
-            limit,
-            offset,
-            brand,
+            limit: params.limit,
+            offset: params.offset,
+            // brand: params?.brand,
           },
         },
       };

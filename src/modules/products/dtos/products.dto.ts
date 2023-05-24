@@ -16,6 +16,8 @@ import {
   IsPositive,
   IsArray,
   ArrayMinSize,
+  IsOptional,
+  Min,
 } from 'class-validator';
 // Mapped Types nos ayuda a reutilizar codigo (Es caso de querer documentar, importar de swagger y no de mapped-types)
 import { PartialType, ApiProperty } from '@nestjs/swagger';
@@ -65,3 +67,15 @@ export class CreateProductDto {
 
 // PartialType toma nuestro DTO base y crea un nuevo DTO agregando las validaciones y el signo ? a cada propiedad
 export class UpdateProductDto extends PartialType(CreateProductDto) {}
+
+export class FilterProductsDto {
+  @IsNumber()
+  @IsOptional()
+  @IsPositive()
+  limit: number;
+
+  @IsNumber()
+  @IsOptional()
+  @Min(0)
+  offset: number;
+}

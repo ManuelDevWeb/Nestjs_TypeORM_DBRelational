@@ -17,6 +17,10 @@ async function bootstrap() {
       // Informar a la API que se esta enviando un parametro no definido en el DTO o en el objeto que debe recibir un endpoint
       // !No siempre es bueno hacer esto, whitelist si se debe usar siempre
       // forbidNonWhitelisted: true,
+      // Transforma los query params de string a number
+      transformOptions: {
+        enableImplicitConversion: true,
+      },
     }),
   );
 
