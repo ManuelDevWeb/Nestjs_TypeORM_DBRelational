@@ -9,6 +9,8 @@ import {
   JoinColumn,
 } from 'typeorm';
 
+import { Exclude } from 'class-transformer';
+
 // Importando entidad a relacionar
 import { Product } from '../../products/entities/product.entity';
 import { Order } from './order.entity';
@@ -21,6 +23,8 @@ export class OrderItem {
   @PrimaryGeneratedColumn()
   id: number;
 
+  // Excluyendo al momento de retornar la informacion al cliente
+  @Exclude()
   @CreateDateColumn({
     // Nombre de la columna en la DB
     name: 'create_at',
@@ -29,6 +33,8 @@ export class OrderItem {
   })
   createAt: Date;
 
+  // Excluyendo al momento de retornar la informacion al cliente
+  @Exclude()
   @UpdateDateColumn({
     // Nombre de la columna en la DB
     name: 'update_at',

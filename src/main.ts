@@ -1,6 +1,6 @@
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
 // Permite validar los datos que se reciben en los controladores
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, ClassSerializerInterceptor } from '@nestjs/common';
 import { AppModule } from './app.module';
 
 // Documentacion API
@@ -23,6 +23,9 @@ async function bootstrap() {
       },
     }),
   );
+
+  // Permite activar la serializacion. Esta permite transformar la informacion antes de enviarla al cliente
+  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
 
   // Creando documentacion
   const config = new DocumentBuilder()
